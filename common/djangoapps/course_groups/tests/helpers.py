@@ -45,7 +45,8 @@ def config_course_cohorts(
         discussions,
         cohorted,
         cohorted_discussions=None,
-        auto_cohort_groups=None
+        auto_cohort_groups=None,
+        always_cohort_inline_discussions=None  # pylint: disable=C0103
 ):
     """
     Given a course with no discussion set up, add the discussions and set
@@ -80,6 +81,9 @@ def config_course_cohorts(
 
     if auto_cohort_groups is not None:
         d["auto_cohort_groups"] = auto_cohort_groups
+
+    if always_cohort_inline_discussions is not None:
+        d["always_cohort_inline_discussions"] = always_cohort_inline_discussions
 
     course.cohort_config = d
 
