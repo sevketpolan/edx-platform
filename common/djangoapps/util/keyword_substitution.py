@@ -37,26 +37,22 @@ def add_keyword_function_map(mapping):
     """
     KEYWORD_FUNCTION_MAP.update(mapping)
 
-def substitute_keywords_with_data(string, user_id=None, course_id=None):
+def substitute_keywords_given_user(string, user=None, course=None):
     """
+    Replaces all %%-encoded words using KEYWORD_FUNCTION_MAP mapping functions
+
     Iterates through all keywords that must be substituted and replaces
     them by calling the corresponding functions stored in KEYWORD_FUNCTION_MAP.
 
-    Function stored in KEYWORD_FUNCTION_MAP must return a string to replace with.
+    Functions stored in KEYWORD_FUNCTION_MAP must return a replacement string.
     Also, functions imported from other modules must be wrapped around in a
     new function if they don't take in user_id and course_id. This is to simplify
     the loop below, and eliminate the possibility of unnecessarily piling up
     if elif else statements when the keyword pool grows.
     """
-
-    # Do not proceed without parameters: Compatibility check with existing tests
-    # That do not supply these parameters
-    if user_id is None or course_id is None:
+    if user is None or course is None:
+        # Cannot proceed without course and user information
         return string
-
-    # Memoize user objects
-    user = User.objects.get(id=user_id)
-    course = modulestore().get_course(course_id, depth=0)
 
     for key, func in KEYWORD_FUNCTION_MAP.iteritems():
         if key in string:
@@ -64,3 +60,25 @@ def substitute_keywords_with_data(string, user_id=None, course_id=None):
             string = string.replace(key, substitutor)
 
     return string
+
+def substitute_keywords_with_data(string, user_id=None, course_id=None):
+    """
+    Given user and course ids, replaces all %%-encoded words in the given string
+    """
+
+    # Do not proceed without parameters: Compatibility check with existing tests
+    # that do not supply these parameters
+    if user_id is None or course_id is None:
+        return string
+
+    # Grab user objects
+    user = User.objects.get(id=user_id)
+    course = modulestore().get_course(course_id, depth=0)
+
+    """
+    for key, func in KEYWORD_FUNCTION_MAP.iteritems():
+        if key in string:
+            substitutor = func(user, course)
+            string = string.replace(key, substitutor)
+    """
+    return substitute_keywords_given_user(string, user, course)

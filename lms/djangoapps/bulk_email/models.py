@@ -186,15 +186,8 @@ class CourseEmailTemplate(models.Model):
         which is rendered using format() with the provided `context` dict.
 
         Any keywords encoded in the form %%keywrod%% found in the message
-        body are subtituted before the body is inserted into the template.
-
-        This doesn't insert user's text into template, until such time we can
-        support proper error handling due to errors in the message body
-        (e.g. due to the use of curly braces).
-
-        Instead, for now, we insert the message body *after* the substitutions
-        have been performed, so that anything in the message body that might
-        interfere will be innocently returned as-is.
+        body are subtituted with user data before the body is inserted into
+        the template.
 
         Output is returned as a unicode string.  It is not encoded as utf-8.
         Such encoding is left to the email code, which will use the value

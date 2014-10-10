@@ -12,6 +12,7 @@ import edxmako
 import logging
 from monkey_patch import django_utils_translation
 import analytics
+from util import keyword_substitution
 
 
 log = logging.getLogger(__name__)
@@ -162,7 +163,6 @@ def get_keyword_function_map():
 
     from student.models import anonymous_id_for_user
     from util.date_utils import get_default_time_display
-    from util import keyword_substitution
 
     def user_id_sub(user, course):
         # For compatibility with the existing anon_ids, return anon_id without course_id
