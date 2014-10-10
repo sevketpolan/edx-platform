@@ -13,8 +13,6 @@ import logging
 from monkey_patch import django_utils_translation
 import analytics
 
-# Imports required for Monkeypatching keyword substitution module
-from util import keyword_substitution
 
 log = logging.getLogger(__name__)
 
@@ -43,10 +41,10 @@ def run():
         analytics.init(settings.SEGMENT_IO_LMS_KEY, flush_at=50)
 
     # Monkey patch the keyword function map
-    if(keyword_substitution.keyword_function_map_is_empty()):
+    if keyword_substitution.keyword_function_map_is_empty():
         keyword_substitution.add_keyword_function_map(get_keyword_function_map())
-        # Once keyword function map is set, make update function a no-op
-        keyword_substitution.add_keyword_function_map = lambda x:x
+        # Once keyword function map is set, make update function do nothing
+        keyword_substitution.add_keyword_function_map = lambda x: None
 
 
 def add_mimetypes():
@@ -151,8 +149,10 @@ def enable_third_party_auth():
 
 def get_keyword_function_map():
     """
-    Define the mapping of keywords and functions that will be used to filter
-    html, text and email strings before rendering them.
+    Define the mapping of keywords and filtering functions
+
+    The functions are used to filter html, text and email strings
+    before rendering them.
 
     The generated map will be monkey-patched onto the keyword_substitution
     module so that it persists along with the running server.
@@ -162,6 +162,8 @@ def get_keyword_function_map():
 
     from student.models import anonymous_id_for_user
     from util.date_utils import get_default_time_display
+    from util import keyword_substitution
+
     def user_id_sub(user, course):
         # For compatibility with the existing anon_ids, return anon_id without course_id
         return anonymous_id_for_user(user, None)
