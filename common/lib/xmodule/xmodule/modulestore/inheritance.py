@@ -159,7 +159,6 @@ class InheritanceMixin(XBlockMixin):
         help=_("Enter true or false. If true, problems default to displaying a 'Reset' button. This value may be "
                "overriden in each problem's settings. Existing problems are unaffected."),
         scope=Scope.settings,
-        default=True
     )
 
 

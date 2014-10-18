@@ -25,6 +25,12 @@ def _view_problem(step, problem_type, problem_settings=None):
 def view_problem_with_attempts(step, problem_type, attempts):
     _view_problem(step, problem_type, {'max_attempts': attempts})
 
+@step(u'I am viewing a randomization "([^"]*)" "([^"]*)" problem with "([^"]*)" attempts with reset')
+def view_problem_with_attempts_reset(step, randomization, problem_type, attempts, ):
+    _view_problem(step, problem_type,  {'max_attempts': attempts,
+                                       'rerandomize': randomization,
+                                       'show_reset_button': True})
+
 
 @step(u'I am viewing a "([^"]*)" that shows the answer "([^"]*)"')
 def view_problem_with_show_answer(step, problem_type, answer):
@@ -35,6 +41,10 @@ def view_problem_with_show_answer(step, problem_type, answer):
 def view_problem(step, problem_type):
     _view_problem(step, problem_type)
 
+
+@step(u'I am viewing a randomization "([^"]*)" "([^"]*)" problem with reset button on')
+def view_random_reset_problem(step, randomization, problem_type):
+    _view_problem(step, problem_type, {'rerandomize': randomization, 'show_reset_button': True})
 
 @step(u'External graders respond "([^"]*)"')
 def set_external_grader_response(step, correctness):

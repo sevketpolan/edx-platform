@@ -478,15 +478,15 @@ class CapaMixin(CapaFields):
         if (self.closed() and not is_survey_question):
                 return False
 
-        # Never show the button if the problem is correct
-        if self.is_correct():
-            return False
-
         # Button only shows up for randomized problems if the question has been submitted
         if self.rerandomize in [RANDOMIZATION.ALWAYS, RANDOMIZATION.ONRESET] and self.is_submitted():
             return True
         else:
-            return self.show_reset_button
+            # Do NOT show the button if the problem is correct
+            if self.is_correct():
+                return False
+            else:
+                return self.show_reset_button
 
     def should_show_save_button(self):
         """
