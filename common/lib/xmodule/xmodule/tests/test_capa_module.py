@@ -1120,16 +1120,22 @@ class CapaModuleTest(unittest.TestCase):
         module = CapaFactory.create(rerandomize=RANDOMIZATION.ALWAYS, max_attempts=0, done=True, correct=False)
         self.assertTrue(module.should_show_reset_button())
 
-        # If the question is correct
+        # If the question is correct and randomization is never
         # DO not show the reset button
-        module = CapaFactory.create(rerandomize=RANDOMIZATION.ALWAYS, max_attempts=0, done=True, correct=True)
+        module = CapaFactory.create(rerandomize=RANDOMIZATION.NEVER, max_attempts=0, done=True, correct=True)
         self.assertFalse(module.should_show_reset_button())
 
-        # Don't show reset button even if randomization is turned on
+
+        # If the question is correct and randomization is always
+        # Show the reset button
+        module = CapaFactory.create(rerandomize=RANDOMIZATION.ALWAYS, max_attempts=0, done=True, correct=True)
+        self.assertTrue(module.should_show_reset_button())
+
+        # Don't show reset button if randomization is turned on and the question is not done
         module = CapaFactory.create(rerandomize=RANDOMIZATION.ALWAYS, show_reset_button=False, done=False)
         self.assertFalse(module.should_show_reset_button())
 
-        # Show reset button even if randomization is turned on and the problem is done
+        # Show reset button if randomization is turned on and the problem is done
         module = CapaFactory.create(rerandomize=RANDOMIZATION.ALWAYS, show_reset_button=False, done=True)
         self.assertTrue(module.should_show_reset_button())
 

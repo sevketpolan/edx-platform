@@ -103,7 +103,7 @@ def i_see_advanced_settings_with_values(step):
             [PROBLEM_WEIGHT, "", False],
             [RANDOMIZATION, "Never", False],
             [SHOW_ANSWER, "Finished", False],
-            [SHOW_RESET_BUTTON, "True", False],
+            [SHOW_RESET_BUTTON, "False", False],
             [TIMER_BETWEEN_ATTEMPTS, "0", False],
         ])
 
