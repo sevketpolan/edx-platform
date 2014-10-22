@@ -42,8 +42,7 @@ from xmodule.modulestore.django import ASSET_IGNORE_REGEX
 from xmodule.modulestore.exceptions import DuplicateCourseError
 from xmodule.modulestore.mongo.base import MongoRevisionKey
 from xmodule.modulestore import ModuleStoreEnum
-from xmodule.modulestore.draft_and_published import DIRECT_ONLY_CATEGORIES
-from xmodule.modulestore.store_utilities import module_node_contructor, get_subtree_roots
+from xmodule.modulestore.store_utilities import module_node_contructor, get_roots_from_node_list
 
 
 log = logging.getLogger(__name__)
@@ -505,12 +504,10 @@ def _import_course_draft(
         _update_module_location(module, module_location.replace(revision=MongoRevisionKey.draft))
 
         # make sure our parent has us in its list of children
-        # this is to make sure private only verticals show up
+        # this is to make sure private only modules show up
         # in the list of children since they would have been
         # filtered out from the non-draft store export.
-        # Note though that verticals nested below the unit level will not have
-        # a parent_url and do not need special handling.
-        if module_has_parent_pointer(module):
+        if module_has_parent_pointer_and_index_attr(module):
             parent_url = get_parent_url(module)
             index = index_in_children_list(module)
 
@@ -610,10 +607,10 @@ def _import_course_draft(
                 except Exception:  # pylint: disable=W0703
                     logging.exception('Error while parsing course xml.')
 
-    # sort drafts
+    # sort drafts by `index_in_children_list` attribute
     drafts.sort(key=lambda x: x.index)
 
-    for draft in get_subtree_roots(drafts):
+    for draft in get_roots_from_node_list(drafts):
         try:
             _import_module(draft.module)
         except Exception:  # pylint: disable=W0703
@@ -675,8 +672,10 @@ def get_parent_url(module, xml=None):
 
 def index_in_children_list(module, xml=None):
     """
-    Get the index_in_children_list, if any, from module using xml as an alternative source. If it finds it in
-    xml but not on module, it modifies module so that the next call to this w/o the xml will get the field
+    Get the index_in_children_list, if any, from module using xml
+    as an alternative source. If it finds it in xml but not on module,
+    it modifies module so that the next call to this w/o the xml
+    will get the field.
     """
     if hasattr(module, 'xml_attributes'):
         val = module.xml_attributes.get('index_in_children_list')
@@ -704,14 +703,19 @@ def create_xml_attributes(module, xml):
     setattr(module, 'xml_attributes', xml_attrs)
 
 
-def module_has_parent_pointer(module):
+def module_has_parent_pointer_and_index_attr(module):
     """
-    Does the module have a parent pointer
+    Checks if a module has a parent pointer and an index_in_children_list attr.
+    This is only the case for a draft module.
     """
-    if module.location.block_type in DIRECT_ONLY_CATEGORIES:
-        return False
     if hasattr(module, 'xml_attributes'):
-        return 'parent_url' in module.xml_attributes or 'parent_sequential_url' in module.xml_attributes
+        has_parent_pointer = 'parent_url' in module.xml_attributes or 'parent_sequential_url' in module.xml_attributes
+
+        has_index_attr = False
+        index_in_children_list = module.xml_attributes.get('index_in_children_list')
+        if index_in_children_list is not None:
+            has_index_attr = index_in_children_list.isdigit()
+        return has_parent_pointer and has_index_attr
     return False
 
 
