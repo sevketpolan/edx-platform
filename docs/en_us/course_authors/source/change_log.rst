@@ -13,6 +13,8 @@ October, 2014
 
    * - Date
      - Change
+   * - 10/29/2014
+     - Added information about course start time visibility to :ref:`The Course Start Date`
    * - 10/16/14
      - Updated :ref:`Set Important Dates for Your Course` to reflect change
        that course dates now use UTC.
