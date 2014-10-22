@@ -1027,6 +1027,7 @@ instructor_dash_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/ins
 # JavaScript modules.
 student_account_js = [
     'js/common_helpers/edx.utils.validate.js',
+    'js/student_account/enrollment_interface.js',
     'js/student_account/models/LoginModel.js',
     'js/student_account/models/RegisterModel.js',
     'js/student_account/models/PasswordResetModel.js',

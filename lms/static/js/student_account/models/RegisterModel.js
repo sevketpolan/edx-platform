@@ -39,15 +39,27 @@ var edx = edx || {};
                 headers: headers
             })
             .done(function() {
-                var query = window.location.search,
-                    url = '/dashboard';
+                var enrollment = edx.student.account.EnrollmentInterface;
+                var query = new URI(window.location.search);
+                var url = '/dashboard';
+                var query_map = query.search(true);
+                
+                // if we need to enroll in the course, mark as enrolled
+                if("enrollment_action" in query_map && query_map["enrollment_action"] === "enroll"){
+                    var course_id = query_map['course_id'];
+                    enrollment.enroll(course_id);
+
+                }
+
+                // check for forwarding url
+                if("next" in query_map) {
+                    var next = query_map['next'];
+                    if(!window.isExternal(next)){
+                        url = next;
+                    }
+                }
 
                 model.trigger('sync');
-
-                // If query string in url go back to that page
-                if ( query.length > 1 ) {
-                    url = query.substring( query.indexOf('=') + 1 );
-                }
 
                 window.location.href = url;
             })
