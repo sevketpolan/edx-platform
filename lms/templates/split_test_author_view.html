@@ -4,7 +4,7 @@
 <%
 split_test = context.get('split_test')
 user_partition = split_test.descriptor.get_selected_partition()
-messages = split_test.descriptor.validation_messages()
+messages = split_test.descriptor.detailed_validation_messages()
 show_link = group_configuration_url is not None
 %>
 
@@ -27,7 +27,7 @@ show_link = group_configuration_url is not None
 % endif
 % if len(messages) > 0:
     <%
-    general_validation = split_test.descriptor.general_validation_message
+    general_validation = split_test.descriptor.validation_messages()
     def get_validation_icon(validation_type):
         if validation_type == ValidationMessageType.error:
             return 'icon-exclamation-sign'

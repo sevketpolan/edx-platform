@@ -344,7 +344,7 @@ class SplitTestModuleStudioTest(SplitTestModuleTest):
             self.assertEqual(message.action_class, expected_action_class)
             self.assertEqual(message.action_label, expected_action_label)
 
-        def verify_general_validation_message(general_validation, expected_message, expected_message_type):
+        def verify_summary_validation_message(general_validation, expected_message, expected_message_type):
             """
             Verify that the general validation message has the expected validation message and type.
             """
@@ -353,7 +353,7 @@ class SplitTestModuleStudioTest(SplitTestModuleTest):
 
         # Verify the messages for an unconfigured user partition
         split_test_module.user_partition_id = -1
-        messages = split_test_module.validation_messages()
+        messages = split_test_module.detailed_validation_messages()
         self.assertEqual(len(messages), 1)
         verify_validation_message(
             messages[0],
@@ -362,8 +362,8 @@ class SplitTestModuleStudioTest(SplitTestModuleTest):
             'edit-button',
             u"Select a Group Configuration",
         )
-        verify_general_validation_message(
-            split_test_module.general_validation_message,
+        verify_summary_validation_message(
+            split_test_module.validation_messages(),
             u"This content experiment has issues that affect content visibility.",
             ValidationMessageType.warning
         )
@@ -373,16 +373,16 @@ class SplitTestModuleStudioTest(SplitTestModuleTest):
         split_test_module.user_partitions = [
             UserPartition(0, 'first_partition', 'First Partition', [Group("0", 'alpha'), Group("1", 'beta')])
         ]
-        messages = split_test_module.validation_messages()
+        messages = split_test_module.detailed_validation_messages()
         self.assertEqual(len(messages), 0)
-        self.assertIsNone(split_test_module.general_validation_message, None)
+        self.assertIsNone(split_test_module.validation_messages(), None)
 
         # Verify the messages for a split test with too few groups
         split_test_module.user_partitions = [
             UserPartition(0, 'first_partition', 'First Partition',
                           [Group("0", 'alpha'), Group("1", 'beta'), Group("2", 'gamma')])
         ]
-        messages = split_test_module.validation_messages()
+        messages = split_test_module.detailed_validation_messages()
         self.assertEqual(len(messages), 1)
         verify_validation_message(
             messages[0],
@@ -391,8 +391,8 @@ class SplitTestModuleStudioTest(SplitTestModuleTest):
             'add-missing-groups-button',
             u"Add Missing Groups"
         )
-        verify_general_validation_message(
-            split_test_module.general_validation_message,
+        verify_summary_validation_message(
+            split_test_module.validation_messages(),
             u"This content experiment has issues that affect content visibility.",
             ValidationMessageType.error
         )
@@ -401,15 +401,15 @@ class SplitTestModuleStudioTest(SplitTestModuleTest):
             UserPartition(0, 'first_partition', 'First Partition',
                           [Group("0", 'alpha')])
         ]
-        messages = split_test_module.validation_messages()
+        messages = split_test_module.detailed_validation_messages()
         self.assertEqual(len(messages), 1)
         verify_validation_message(
             messages[0],
             u"The experiment has an inactive group. Move content into active groups, then delete the inactive group.",
             ValidationMessageType.warning
         )
-        verify_general_validation_message(
-            split_test_module.general_validation_message,
+        verify_summary_validation_message(
+            split_test_module.validation_messages(),
             u"This content experiment has issues that affect content visibility.",
             ValidationMessageType.warning
         )
@@ -418,7 +418,7 @@ class SplitTestModuleStudioTest(SplitTestModuleTest):
             UserPartition(0, 'first_partition', 'First Partition',
                           [Group("0", 'alpha'), Group("2", 'gamma')])
         ]
-        messages = split_test_module.validation_messages()
+        messages = split_test_module.detailed_validation_messages()
         self.assertEqual(len(messages), 2)
         verify_validation_message(
             messages[0],
@@ -433,15 +433,15 @@ class SplitTestModuleStudioTest(SplitTestModuleTest):
             ValidationMessageType.warning
         )
         # With two messages of type error and warning priority given to error.
-        verify_general_validation_message(
-            split_test_module.general_validation_message,
+        verify_summary_validation_message(
+            split_test_module.validation_messages(),
             u"This content experiment has issues that affect content visibility.",
             ValidationMessageType.error
         )
 
         # Verify the messages for a split test referring to a non-existent user partition
         split_test_module.user_partition_id = 2
-        messages = split_test_module.validation_messages()
+        messages = split_test_module.detailed_validation_messages()
         self.assertEqual(len(messages), 1)
         verify_validation_message(
             messages[0],
@@ -449,8 +449,8 @@ class SplitTestModuleStudioTest(SplitTestModuleTest):
             u"Select a valid group configuration or delete this experiment.",
             ValidationMessageType.error
         )
-        verify_general_validation_message(
-            split_test_module.general_validation_message,
+        verify_summary_validation_message(
+            split_test_module.validation_messages(),
             u"This content experiment has issues that affect content visibility.",
             ValidationMessageType.error
         )

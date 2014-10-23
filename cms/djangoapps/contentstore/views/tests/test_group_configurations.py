@@ -541,7 +541,7 @@ class GroupConfigurationsValidationTestCase(CourseTestCase, HelperMethods):
     def setUp(self):
         super(GroupConfigurationsValidationTestCase, self).setUp()
 
-    @patch('xmodule.split_test_module.SplitTestDescriptor.validation_messages')
+    @patch('xmodule.split_test_module.SplitTestDescriptor.detailed_validation_messages')
     def test_error_message_present(self, mocked_validation_messages):
         """
         Tests if validation message is present.
@@ -565,7 +565,7 @@ class GroupConfigurationsValidationTestCase(CourseTestCase, HelperMethods):
             }
         )
 
-    @patch('xmodule.split_test_module.SplitTestDescriptor.validation_messages')
+    @patch('xmodule.split_test_module.SplitTestDescriptor.detailed_validation_messages')
     def test_warning_message_present(self, mocked_validation_messages):
         """
         Tests if validation message is present.
@@ -589,7 +589,7 @@ class GroupConfigurationsValidationTestCase(CourseTestCase, HelperMethods):
             }
         )
 
-    @patch('xmodule.split_test_module.SplitTestDescriptor.validation_messages')
+    @patch('xmodule.split_test_module.SplitTestDescriptor.detailed_validation_messages')
     def test_update_usage_info(self, mocked_validation_messages):
         """
         Tests if validation message is present when updating usage info.
@@ -615,7 +615,7 @@ class GroupConfigurationsValidationTestCase(CourseTestCase, HelperMethods):
             }
         )
 
-    @patch('xmodule.split_test_module.SplitTestDescriptor.validation_messages')
+    @patch('xmodule.split_test_module.SplitTestDescriptor.detailed_validation_messages')
     def test_update_usage_info_no_message(self, mocked_validation_messages):
         """
         Tests if validation message is not present when updating usage info.

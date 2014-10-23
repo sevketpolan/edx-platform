@@ -1293,7 +1293,7 @@ class GroupConfiguration(object):
             usage_info[split_test.user_partition_id].append({
                 'label': '{} / {}'.format(unit.display_name, split_test.display_name),
                 'url': unit_url,
-                'validation': split_test.general_validation_message,
+                'validation': split_test.validation_messages(),
             })
         return usage_info
 

@@ -11,7 +11,7 @@ from operator import itemgetter
 from xmodule.progress import Progress
 from xmodule.seq_module import SequenceDescriptor
 from xmodule.studio_editable import StudioEditableModule, StudioEditableDescriptor
-from xmodule.x_module import XModule, module_attr, STUDENT_VIEW
+from xmodule.x_module import XModule, module_attr, STUDENT_VIEW, ValidationMessageType, ValidationMessage
 from xmodule.modulestore.inheritance import UserPartitionList
 
 from lxml import etree
@@ -26,48 +26,6 @@ log = logging.getLogger('edx.' + __name__)
 _ = lambda text: text
 
 DEFAULT_GROUP_NAME =  _(u'Group ID {group_id}')
-
-
-class ValidationMessageType(object):
-    """
-    The type for a validation message -- currently 'information', 'warning' or 'error'.
-    """
-    information = 'information'
-    warning = 'warning'
-    error = 'error'
-
-    @staticmethod
-    def display_name(message_type):
-        """
-        Returns the display name for the specified validation message type.
-        """
-        if message_type == ValidationMessageType.warning:
-            # Translators: This message will be added to the front of messages of type warning,
-            # e.g. "Warning: this component has not been configured yet".
-            return _(u"Warning")
-        elif message_type == ValidationMessageType.error:
-            # Translators: This message will be added to the front of messages of type error,
-            # e.g. "Error: required field is missing".
-            return _(u"Error")
-        else:
-            return None
-
-
-# TODO: move this into the xblock repo once it has a formal validation contract
-class ValidationMessage(object):
-    """
-    Represents a single validation message for an xblock.
-    """
-    def __init__(self, xblock, message_text, message_type, action_class=None, action_label=None):
-        assert isinstance(message_text, unicode)
-        self.xblock = xblock
-        self.message_text = message_text
-        self.message_type = message_type
-        self.action_class = action_class
-        self.action_label = action_label
-
-    def __unicode__(self):
-        return self.message_text
 
 
 class SplitTestFields(object):
@@ -544,7 +502,7 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
 
         return active_children, inactive_children
 
-    def validation_messages(self):
+    def detailed_validation_messages(self):
         """
         Returns a list of validation messages describing the current state of the block. Each message
         includes a message type indicating whether the message represents information, a warning or an error.
@@ -649,18 +607,23 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
         self.children.append(dest_usage_key)  # pylint: disable=no-member
         self.group_id_to_child[unicode(group.id)] = dest_usage_key
 
-    @property
-    def general_validation_message(self):
+    def validation_messages(self):
         """
         Message for either error or warning validation message/s.
 
         Returns message and type. Priority given to error type message.
         """
-        validation_messages = self.validation_messages()
-        if validation_messages:
-            has_error = any(message.message_type == ValidationMessageType.error for message in validation_messages)
+        detailed_validation_messages = self.detailed_validation_messages()
+        if detailed_validation_messages:
+            has_error = any(message.message_type == ValidationMessageType.error for message in detailed_validation_messages)
             return {
                 'message': _(u"This content experiment has issues that affect content visibility."),
                 'type': ValidationMessageType.error if has_error else ValidationMessageType.warning,
             }
         return None
+
+    # Thought-- Default behavior: show all messages. Split_test overrides to show short messages.
+    # OR, some sort of "View all" behavior if multiple messages?
+    # Split_test was written with the idea that detailed messages should not show up on unit page. Needs to keep acting that way.
+
+    # I think validation_messages as implemented stays just in split_test.
