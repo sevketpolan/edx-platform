@@ -42,7 +42,7 @@ from xmodule.modulestore.django import ASSET_IGNORE_REGEX
 from xmodule.modulestore.exceptions import DuplicateCourseError
 from xmodule.modulestore.mongo.base import MongoRevisionKey
 from xmodule.modulestore import ModuleStoreEnum
-from xmodule.modulestore.store_utilities import module_node_contructor, get_roots_from_node_list
+from xmodule.modulestore.store_utilities import draft_node_constructor, get_draft_subtree_roots
 
 
 log = logging.getLogger(__name__)
@@ -503,14 +503,14 @@ def _import_course_draft(
         # to ensure that pure XBlock field data is updated correctly.
         _update_module_location(module, module_location.replace(revision=MongoRevisionKey.draft))
 
+        parent_url = get_parent_url(module)
+        index = index_in_children_list(module)
+
         # make sure our parent has us in its list of children
         # this is to make sure private only modules show up
         # in the list of children since they would have been
         # filtered out from the non-draft store export.
-        if module_has_parent_pointer_and_index_attr(module):
-            parent_url = get_parent_url(module)
-            index = index_in_children_list(module)
-
+        if parent_url is not None and index is not None:
             course_key = descriptor.location.course_key
             parent_location = course_key.make_usage_key_from_deprecated_string(parent_url)
 
@@ -598,7 +598,7 @@ def _import_course_draft(
                         parent_url = get_parent_url(descriptor, xml)
                         draft_url = descriptor.location.to_deprecated_string()
 
-                        draft = module_node_contructor(
+                        draft = draft_node_constructor(
                             module=descriptor, url=draft_url, parent_url=parent_url, index=index
                         )
 
@@ -610,7 +610,7 @@ def _import_course_draft(
     # sort drafts by `index_in_children_list` attribute
     drafts.sort(key=lambda x: x.index)
 
-    for draft in get_roots_from_node_list(drafts):
+    for draft in get_draft_subtree_roots(drafts):
         try:
             _import_module(draft.module)
         except Exception:  # pylint: disable=W0703
@@ -666,8 +666,6 @@ def get_parent_url(module, xml=None):
     if xml is not None:
         create_xml_attributes(module, xml)
         return get_parent_url(module)  # don't reparse xml b/c don't infinite recurse but retry above lines
-    else:
-        return None
 
 
 def index_in_children_list(module, xml=None):
@@ -679,7 +677,9 @@ def index_in_children_list(module, xml=None):
     """
     if hasattr(module, 'xml_attributes'):
         val = module.xml_attributes.get('index_in_children_list')
-        return int(val)
+        if val is not None:
+            return int(val)
+        return None
     if xml is not None:
         create_xml_attributes(module, xml)
         return index_in_children_list(module)  # don't reparse xml b/c don't infinite recurse but retry above lines
@@ -701,22 +701,6 @@ def create_xml_attributes(module, xml):
 
     # now cache it on module where it's expected
     setattr(module, 'xml_attributes', xml_attrs)
-
-
-def module_has_parent_pointer_and_index_attr(module):
-    """
-    Checks if a module has a parent pointer and an index_in_children_list attr.
-    This is only the case for a draft module.
-    """
-    if hasattr(module, 'xml_attributes'):
-        has_parent_pointer = 'parent_url' in module.xml_attributes or 'parent_sequential_url' in module.xml_attributes
-
-        has_index_attr = False
-        index_in_children_list = module.xml_attributes.get('index_in_children_list')
-        if index_in_children_list is not None:
-            has_index_attr = index_in_children_list.isdigit()
-        return has_parent_pointer and has_index_attr
-    return False
 
 
 def validate_no_non_editable_metadata(module_store, course_id, category):
