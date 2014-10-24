@@ -44,7 +44,7 @@ var edx = edx || {};
          * default init steps
          */
         preRender: function( data ) {
-            /* custom code goes here */
+            /* Custom code goes here */
             return data;
         },
 
@@ -89,7 +89,7 @@ var edx = edx || {};
             this.render( html.join('') );
         },
 
-        /* Helper method ot toggle display
+        /* Helper method to toggle display
          * including accessibility considerations
          */
         element: {

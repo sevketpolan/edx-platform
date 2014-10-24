@@ -1,6 +1,6 @@
 var edx = edx || {};
 
-(function( $, _ ) {
+(function( $, _, gettext ) {
     'use strict';
 
     edx.utils = edx.utils || {};
@@ -10,10 +10,10 @@ var edx = edx || {};
             validate: {
 
                 msg: {
-                    email: '<li>A properly formatted e-mail is required</li>',
-                    min: '<li><%= field %> must be a minimum of <%= count %> characters long</li>',
-                    max: '<li><%= field %> must be a maximum of <%= count %> characters long</li>',
-                    required: '<li><%= field %> field is required</li>',
+                    email: '<li><%- gettext("A properly formatted email is required") %></li>',
+                    min: '<li><%- _.sprintf(gettext("%s must be a minimum of %d characters long"), field, count) %></li>',
+                    max: '<li><%- _.sprintf(gettext("%s must be a maximum of %d characters long"), field, count) %></li>',
+                    required: '<li><%- _.sprintf("%s field is required"), field) %></li>',
                     custom: '<li><%= content %></li>'
                 },
 
@@ -150,4 +150,4 @@ var edx = edx || {};
 
     edx.utils.validate = utils.validate;
 
-})( jQuery, _ );
+})( jQuery, _, gettext );

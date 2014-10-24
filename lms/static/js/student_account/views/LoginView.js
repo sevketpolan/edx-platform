@@ -94,5 +94,4 @@ var edx = edx || {};
             }
         }
     });
-
 })(jQuery, _, gettext);

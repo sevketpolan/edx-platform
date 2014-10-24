@@ -7,15 +7,19 @@
 
 <%block name="js_extra">
     <script type="text/javascript" src="${static.url('js/vendor/underscore-min.js')}"></script>
+    <script type="text/javascript" src="${static.url('js/vendor/underscore.string.min.js')}"></script>
+    ## Mix non-conflicting functions from underscore.string (all but include, contains, and reverse)
+    ## into the Underscore namespace
+    <script type="text/javascript"> _.mixin(_.str.exports()) </script>
     <script type="text/javascript" src="${static.url('js/vendor/backbone-min.js')}"></script>
     <%static:js group='student_account'/>
 </%block>
 
 <%block name="header_extras">
-% for template_name in ["account", "access", "form_field", "login", "register", "password_reset"]:
-<script type="text/template" id="${template_name}-tpl">
-    <%static:include path="student_account/${template_name}.underscore" />
-</script>
+    % for template_name in ["account", "access", "form_field", "login", "register", "password_reset"]:
+        <script type="text/template" id="${template_name}-tpl">
+            <%static:include path="student_account/${template_name}.underscore" />
+        </script>
 % endfor
 </%block>
 
