@@ -234,6 +234,18 @@ class HtmlDescriptor(HtmlFields, XmlDescriptor, EditingDescriptor):
         non_editable_fields.append(HtmlDescriptor.use_latex_compiler)
         return non_editable_fields
 
+    def validation_messages(self):
+        """
+        Message for either error or warning validation message/s.
+
+        Returns message and type. Priority given to error type message.
+        """
+
+        validation_messages = {
+            'detailed_messages': [{"message": "The author-supplied HTML does not validate.", "type": "error"}],
+        }
+
+        return validation_messages
 
 class AboutFields(object):
     display_name = String(

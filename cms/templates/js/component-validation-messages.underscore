@@ -1,0 +1,46 @@
+<%
+var aggregateMessageType = messages.getSummaryType()
+var aggregateValidationClass = aggregateMessageType === "error"? "has-errors" : "has-warnings"
+%>
+    <!--# Brian questions:-->
+    <!--#    1) Is this "aggregate_validation_class" needed? It existed in the split_test usage.-->
+    <!--#    2) What do you think of the summary message? (with "aggregated" icon)? Does it need sr message type also? -->
+    <!--#    3) icon-exclamation-sign has extra whitespace on its right, compared with icon-warning-sign-->
+    <div class="xblock-message validation <%= aggregateValidationClass %>">
+        <% var summaryMessage = messages.getSummaryMessage(); %>
+        <p class="<%= aggregateMessageType %>"><i class="<%= getIcon(summaryMessage.type) %>"></i>
+        <%- summaryMessage.message %>
+        <% if (summaryMessage.action_class) { %>
+            <a href="#" class="button action-button <%- summaryMessage.action_class %>">
+                <span class="action-button-text"><%- summaryMessage.action_text %></span>
+            </a>
+        <% } %>
+        </p>
+        <% var detailedMessages = messages.getDetailedMessages(); %>
+        <% if (detailedMessages.length > 0) { %>
+            <ul class="xblock-message-list">
+                <% for (var i = 0; i < detailedMessages.length; i++) { %>
+                <%
+                var message = detailedMessages[i];
+                var messageType = message.type
+                var messageTypeDisplayName = messages.getDisplayName(messageType)
+                %>
+                <li class="xblock-message-item <%= messageType %>">
+                    <i class="<%= getIcon(messageType) %>"></i>
+                    <span class="message-text">
+                        <% if (messageTypeDisplayName) { %>
+                            <span class="sr"><%- messageTypeDisplayName %>:</span>
+                        <% } %>
+                        <%- message.message %>
+
+                    <% if (message.action_class) { %>
+                        <a href="#" class="button action-button <%- message.action_class %>">
+                            <span class="action-button-text"><%- message.action_text %></span>
+                        </a>
+                    <% } %>
+                    </span>
+                </li>
+                <% } %>
+            </ul>
+        <% } %>
+    </div>

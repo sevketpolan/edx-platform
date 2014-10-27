@@ -1,15 +1,58 @@
+
 <%!
 from django.utils.translation import ugettext as _
 from contentstore.views.helpers import xblock_studio_url
+import json
 %>
-
 <%
 xblock_url = xblock_studio_url(xblock)
 show_inline = xblock.has_children and not xblock_url
 section_class = "level-nesting" if show_inline else "level-element"
 collapsible_class = "is-collapsible" if xblock.has_children else ""
 label = xblock.display_name or xblock.scope_ids.block_type
+# TODO: why on descriptor. Why not just xblock?
+messages = json.dumps(xblock.descriptor.validation_messages())
 %>
+
+        <%namespace name='static' file='static_content.html'/>
+
+<%block name="header_extras">
+<script type="text/template" id="component-validation-messages-tpl">
+    <%static:include path="js/component-validation-messages.underscore" />
+</script>
+</%block>
+
+<script type='text/javascript'>
+    require(["js/views/validation_messages", "js/models/validation_messages"],
+            function (ValidationMessagesView, ValidationMessagesModel) {
+                var allMessages = ${messages};
+                debugger
+                // TODO: make default implementation empty dict
+                if (!$.isEmptyObject(allMessages)) {
+                    var componentValidationDiv = $('div.component-validation-messages[data-locator="${xblock.location | h}"]');
+                    if (componentValidationDiv.length > 0) {
+                        var model = new ValidationMessagesModel(allMessages);
+                        var view = new ValidationMessagesView({
+                            el: componentValidationDiv,
+                            model: model
+                        });
+                        view.render();
+                    }
+                    var rootValidationDiv = $('div.root-validation-messages[data-locator="${xblock.location | h}"]');
+                    if (rootValidationDiv.length > 0) {
+                        var rootModel = new ValidationMessagesModel(allMessages);
+                        rootModel.set("root", true);
+                        var rootView = new ValidationMessagesView({
+                            el: rootValidationDiv,
+                            model: rootModel
+                        });
+                        rootView.render();
+                    }
+                }
+
+            });
+</script>
+
 
 % if not is_root:
     % if is_reorderable:
@@ -79,6 +122,11 @@ label = xblock.display_name or xblock.scope_ids.block_type
     </div>
     % endif
  </header>
+% if is_root:
+  <div class="wrapper-xblock-message root-validation-messages" data-locator="${xblock.location | h}"/>
+% else:
+  <div class="wrapper-xblock-message component-validation-messages" data-locator="${xblock.location | h}"/>
+% endif
 % if is_root or not xblock_url:
     <article class="xblock-render">
     ${content}
@@ -86,7 +134,6 @@ label = xblock.display_name or xblock.scope_ids.block_type
 % else:
     <div class="xblock-message-area">
     ${content}
-    </div>
 % endif
 
 % if not is_root:

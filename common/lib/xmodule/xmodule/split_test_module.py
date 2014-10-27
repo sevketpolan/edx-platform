@@ -189,6 +189,10 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
             return None
         return partitions_service.get_user_group_for_partition(self.user_partition_id)
 
+    @property
+    def is_configured(self):
+        return not self.user_partition_id == SplitTestFields.no_partition_selected['value']
+
     def _staff_view(self, context):
         """
         Render the staff view for a split test module.
@@ -241,7 +245,6 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
         """
         fragment = Fragment()
         root_xblock = context.get('root_xblock')
-        is_configured = not self.user_partition_id == SplitTestFields.no_partition_selected['value']
         is_root = root_xblock and root_xblock.location == self.location
         active_groups_preview = None
         inactive_groups_preview = None
@@ -258,7 +261,7 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
         fragment.add_content(self.system.render_template('split_test_author_view.html', {
             'split_test': self,
             'is_root': is_root,
-            'is_configured': is_configured,
+            'is_configured': self.is_configured,
             'active_groups_preview': active_groups_preview,
             'inactive_groups_preview': inactive_groups_preview,
             'group_configuration_url': self.descriptor.group_configuration_url,
@@ -510,38 +513,41 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
         _ = self.runtime.service(self, "i18n").ugettext  # pylint: disable=redefined-outer-name
         messages = []
         if self.user_partition_id < 0:
-            messages.append(ValidationMessage(
-                self,
+            messages.append(self.create_validation_message(
                 _(u"The experiment is not associated with a group configuration."),
-                ValidationMessageType.warning,
+                "warning",
                 'edit-button',
                 _(u"Select a Group Configuration")
             ))
         else:
             user_partition = self.get_selected_partition()
             if not user_partition:
-                messages.append(ValidationMessage(
-                    self,
+                messages.append(self.create_validation_message(
                     _(u"The experiment uses a deleted group configuration. Select a valid group configuration or delete this experiment."),
-                    ValidationMessageType.error
+                    "error"
                 ))
             else:
                 [active_children, inactive_children] = self.active_and_inactive_children()
                 if len(active_children) < len(user_partition.groups):
-                    messages.append(ValidationMessage(
-                        self,
+                    messages.append(self.create_validation_message(
                         _(u"The experiment does not contain all of the groups in the configuration."),
-                        ValidationMessageType.error,
+                        "error",
                         'add-missing-groups-button',
                         _(u"Add Missing Groups")
                     ))
                 if len(inactive_children) > 0:
-                    messages.append(ValidationMessage(
-                        self,
+                    messages.append(self.create_validation_message(
                         _(u"The experiment has an inactive group. Move content into active groups, then delete the inactive group."),
                         ValidationMessageType.warning
                     ))
         return messages
+
+    def create_validation_message(self, message, type, action_class=None, action_label=None):
+        validation_message = {"message": message, "type": type}
+        if action_class:
+            validation_message["action_class"] = action_class
+            validation_message["action_text"] = action_label
+        return validation_message
 
     @XBlock.handler
     def add_missing_groups(self, request, suffix=''):  # pylint: disable=unused-argument
@@ -613,14 +619,28 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
 
         Returns message and type. Priority given to error type message.
         """
+        # TODO: need to call super
         detailed_validation_messages = self.detailed_validation_messages()
-        if detailed_validation_messages:
-            has_error = any(message.message_type == ValidationMessageType.error for message in detailed_validation_messages)
-            return {
-                'message': _(u"This content experiment has issues that affect content visibility."),
-                'type': ValidationMessageType.error if has_error else ValidationMessageType.warning,
+
+        if not self.is_configured and len(detailed_validation_messages) == 1:
+            validation_messages = {'summary': detailed_validation_messages[0], 'detailed_messages': []}
+        else:
+            has_error = any(message["type"] == "error" for message in detailed_validation_messages)
+            summary = self.create_validation_message(
+                _(u"This content experiment has issues that affect content visibility."),
+                ValidationMessageType.error if has_error else ValidationMessageType.warning
+            )
+            validation_messages = {
+                'summary': summary,
+                'detailed_messages': detailed_validation_messages,
+                "show_detailed_only_when_root": True
             }
-        return None
+
+        return validation_messages
+
+    @property
+    def is_configured(self):
+        return not self.user_partition_id == SplitTestFields.no_partition_selected['value']
 
     # Thought-- Default behavior: show all messages. Split_test overrides to show short messages.
     # OR, some sort of "View all" behavior if multiple messages?
