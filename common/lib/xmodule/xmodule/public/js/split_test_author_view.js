@@ -3,8 +3,7 @@ window.SplitTestAuthorView = function (runtime, element) {
     var $element = $(element);
     var splitTestLocator = $element.closest('.studio-xblock-wrapper').data('locator');
 
-    // TODO: can a callback be sent instead?
-    $('[data-locator="' + splitTestLocator + '"] .wrapper-xblock-message .add-missing-groups-button').click(function () {
+    runtime.listenTo("add-missing-groups", function (parentLocator) {
         runtime.notify('save', {
             state: 'start',
             element: element,

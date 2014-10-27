@@ -26,30 +26,21 @@ messages = json.dumps(xblock.descriptor.validation_messages())
     require(["js/views/validation_messages", "js/models/validation_messages"],
             function (ValidationMessagesView, ValidationMessagesModel) {
                 var allMessages = ${messages};
-                debugger
+
                 // TODO: make default implementation empty dict
                 if (!$.isEmptyObject(allMessages)) {
                     var componentValidationDiv = $('div.component-validation-messages[data-locator="${xblock.location | h}"]');
-                    if (componentValidationDiv.length > 0) {
-                        var model = new ValidationMessagesModel(allMessages);
-                        var view = new ValidationMessagesView({
-                            el: componentValidationDiv,
-                            model: model
-                        });
-                        view.render();
-                    }
-                    var rootValidationDiv = $('div.root-validation-messages[data-locator="${xblock.location | h}"]');
-                    if (rootValidationDiv.length > 0) {
-                        var rootModel = new ValidationMessagesModel(allMessages);
-                        rootModel.set("root", true);
-                        var rootView = new ValidationMessagesView({
-                            el: rootValidationDiv,
-                            model: rootModel
-                        });
-                        rootView.render();
-                    }
-                }
 
+                    var model = new ValidationMessagesModel(allMessages);
+                    if ($.parseJSON("${is_root == True}".toLowerCase())) {
+                        model.set("root", true);
+                    }
+                    var view = new ValidationMessagesView({
+                        el: componentValidationDiv,
+                        model: model
+                    });
+                    view.render();
+                }
             });
 </script>
 
@@ -107,26 +98,29 @@ messages = json.dumps(xblock.descriptor.validation_messages())
             </ul>
         </div>
     </div>
-    % if xblock_url and not is_root:
-    <div class="xblock-header-secondary">
-        <div class="meta-info">${_('This block contains multiple components.')}</div>
-        <ul class="actions-list">
-            <li class="action-item action-view">
-                <a href="${xblock_url}" class="action-button">
-                    ## Translators: this is a verb describing the action of viewing more details
-                    <span class="action-button-text">${_('View')}</span>
-                    <i class="icon-arrow-right"></i>
-                </a>
-            </li>
-        </ul>
-    </div>
+    % if not is_root:
+        <div class="wrapper-xblock-message component-validation-messages" data-locator="${xblock.location | h}"/>
+        % if xblock_url:
+        <div class="xblock-header-secondary">
+            <div class="meta-info">${_('This block contains multiple components.')}</div>
+            <ul class="actions-list">
+                <li class="action-item action-view">
+                    <a href="${xblock_url}" class="action-button">
+                        ## Translators: this is a verb describing the action of viewing more details
+                        <span class="action-button-text">${_('View')}</span>
+                        <i class="icon-arrow-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        % endif
     % endif
  </header>
+
 % if is_root:
-  <div class="wrapper-xblock-message root-validation-messages" data-locator="${xblock.location | h}"/>
-% else:
-  <div class="wrapper-xblock-message component-validation-messages" data-locator="${xblock.location | h}"/>
+    <div class="wrapper-xblock-message component-validation-messages" data-locator="${xblock.location | h}"/>
 % endif
+
 % if is_root or not xblock_url:
     <article class="xblock-render">
     ${content}

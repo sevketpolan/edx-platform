@@ -1,5 +1,5 @@
-define(["jquery", "underscore", "js/views/baseview", "js/models/validation_messages"],
-    function ($, _, BaseView, ValidationMessagesModel) {
+define(["jquery", "underscore", "js/views/baseview"],
+    function ($, _, BaseView) {
         var ValidationMessages = BaseView.extend({
 
             // takes ValidationMessagesModel as a model

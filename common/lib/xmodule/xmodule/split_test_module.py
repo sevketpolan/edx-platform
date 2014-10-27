@@ -281,7 +281,7 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
             active_child = self.system.get_module(active_child_descriptor)
             rendered_child = active_child.render(StudioEditableModule.get_preview_view_name(active_child), context)
             if active_child.category == 'vertical':
-                group_name, group_id  = self.get_data_for_vertical(active_child)
+                group_name, group_id = self.get_data_for_vertical(active_child)
                 if group_name:
                     rendered_child.content = rendered_child.content.replace(
                         DEFAULT_GROUP_NAME.format(group_id=group_id),
@@ -516,8 +516,8 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
             messages.append(self.create_validation_message(
                 _(u"The experiment is not associated with a group configuration."),
                 "warning",
-                'edit-button',
-                _(u"Select a Group Configuration")
+                action_class='edit-button',
+                action_label=_(u"Select a Group Configuration")
             ))
         else:
             user_partition = self.get_selected_partition()
@@ -532,21 +532,24 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
                     messages.append(self.create_validation_message(
                         _(u"The experiment does not contain all of the groups in the configuration."),
                         "error",
-                        'add-missing-groups-button',
-                        _(u"Add Missing Groups")
+                        action_runtime_event='add-missing-groups',
+                        action_label=_(u"Add Missing Groups")
                     ))
                 if len(inactive_children) > 0:
                     messages.append(self.create_validation_message(
                         _(u"The experiment has an inactive group. Move content into active groups, then delete the inactive group."),
-                        ValidationMessageType.warning
+                        "warning"
                     ))
         return messages
 
-    def create_validation_message(self, message, type, action_class=None, action_label=None):
+    def create_validation_message(self, message, type, action_label=None, action_runtime_event=None, action_class=None):
         validation_message = {"message": message, "type": type}
+        if action_label:
+            validation_message["action_text"] = action_label
         if action_class:
             validation_message["action_class"] = action_class
-            validation_message["action_text"] = action_label
+        if action_runtime_event:
+            validation_message["action_runtime_event"] = action_runtime_event
         return validation_message
 
     @XBlock.handler
@@ -623,12 +626,12 @@ class SplitTestDescriptor(SplitTestFields, SequenceDescriptor, StudioEditableDes
         detailed_validation_messages = self.detailed_validation_messages()
 
         if not self.is_configured and len(detailed_validation_messages) == 1:
-            validation_messages = {'summary': detailed_validation_messages[0], 'detailed_messages': []}
+            validation_messages = {'detailed_messages': detailed_validation_messages, 'additional_root_classes': "no-container-content"}
         else:
             has_error = any(message["type"] == "error" for message in detailed_validation_messages)
             summary = self.create_validation_message(
                 _(u"This content experiment has issues that affect content visibility."),
-                ValidationMessageType.error if has_error else ValidationMessageType.warning
+                "error" if has_error else "warning"
             )
             validation_messages = {
                 'summary': summary,

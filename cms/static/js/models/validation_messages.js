@@ -7,10 +7,16 @@ define(["backbone", "gettext"], function (Backbone, gettext) {
             summary: {},
             detailed_messages: [],
             show_detailed_only_when_root: false,
-            root: false
+            root: false,
+            additional_root_classes: "",
+            additional_inline_classes: ""
         },
 
         getSummaryMessage: function () {
+            var detailedMessages = this.get("detailed_messages");
+            if (detailedMessages.length === 1) {
+                return detailedMessages[0];
+            }
             var summaryMessage;
             if ("message" in this.get("summary")) {
                 summaryMessage = this.get("summary");
@@ -52,10 +58,19 @@ define(["backbone", "gettext"], function (Backbone, gettext) {
         },
 
         getDetailedMessages: function () {
+            var detailedMessages = this.get("detailed_messages");
+            if (detailedMessages.length === 1) {
+                return [];
+            }
             if (this.get("show_detailed_only_when_root") && !this.get("root")) {
                 return [];
             }
-            return this.get("detailed_messages");
+            return detailedMessages;
+        },
+
+        getAdditionalClasses: function () {
+            var classes = this.get("root") ? this.get("additional_root_classes") : this.get("additional_inline_classes");
+            return classes;
         }
 
     });

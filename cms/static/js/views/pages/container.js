@@ -151,6 +151,17 @@ define(["jquery", "underscore", "gettext", "js/views/pages/base_page", "js/views
                     event.preventDefault();
                     self.deleteComponent(self.findXBlockElement(event.target));
                 });
+                // If there are notification action buttons that registered runtime callback event names,
+                // fire events to the runtime and prevent further handling of the action.
+                element.find('.notification-action-button').click(function(event) {
+
+                    var eventName = $(event.srcElement).data("notification-action");
+                    if (eventName) {
+                        event.preventDefault();
+                        // TODO: send location as data
+                        self.xblockView.notifyRuntime(eventName);
+                    }
+                });
             },
 
             editComponent: function(xblockElement) {
