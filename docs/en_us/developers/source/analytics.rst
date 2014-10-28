@@ -72,7 +72,7 @@ Documenting Events
 
 The *edX Platform Developer Documentation* provides guidelines for `Contributing
 to Open edX
-<http://edx.readthedocs.org/projects/userdocs/en/latest/process/index.html>`_`.
+<http://edx-developer-guide.readthedocs.org/en/latest/process/index.html>`_.
 As part of your effort to add events to the platform, consider including
 comments that identify the purpose of the events and the fields emitted for
 them. A description can assure that researchers and other members of the open
