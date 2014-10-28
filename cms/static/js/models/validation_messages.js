@@ -7,21 +7,22 @@ define(["backbone", "gettext"], function (Backbone, gettext) {
             summary: {},
             detailed_messages: [],
             show_detailed_only_when_root: false,
-            root: false,
+            is_root: false,
             additional_root_classes: "",
-            additional_inline_classes: ""
+            additional_inline_classes: "",
+            is_empty: true
         },
 
         getSummaryMessage: function () {
             var summaryMessage;
-            if ("message" in this.get("summary")) {
+            if ("text" in this.get("summary")) {
                 summaryMessage = this.get("summary");
             }
             else {
-                summaryMessage = {"message" : gettext("This component has validation issues.")};
+                summaryMessage = {"text" : gettext("This component has validation issues.")};
             }
 
-            if (!("type" in summaryMessage)) {
+            if (!("type" in summaryMessage) || summaryMessage.type === null) {
                 summaryMessage.type = this.getSummaryType();
             }
             return summaryMessage;
@@ -54,14 +55,14 @@ define(["backbone", "gettext"], function (Backbone, gettext) {
         },
 
         getDetailedMessages: function () {
-            if (this.get("show_detailed_only_when_root") && !this.get("root")) {
+            if (this.get("show_detailed_only_when_root") && !this.get("is_root")) {
                 return [];
             }
             return this.get("detailed_messages");
         },
 
         getAdditionalClasses: function () {
-            var classes = this.get("root") ? this.get("additional_root_classes") : this.get("additional_inline_classes");
+            var classes = this.get("is_root") ? this.get("additional_root_classes") : this.get("additional_inline_classes");
             return classes;
         }
 

@@ -6,13 +6,8 @@ user_partition = split_test.descriptor.get_selected_partition()
 show_link = group_configuration_url is not None
 %>
 
-% if is_root and not is_configured:
-    <div class="no-container-content">
-% else:
-    <div class="wrapper-xblock-message">
-% endif
-
-% if user_partition:
+% if is_configured:
+<div class="wrapper-xblock-message">
     <div class="xblock-message information">
         <p>
             <span class="message-text">
@@ -22,8 +17,8 @@ show_link = group_configuration_url is not None
             </span>
         </p>
     </div>
-% endif
 </div>
+% endif
 
 % if is_root:
     <div class="wrapper-groups is-active">

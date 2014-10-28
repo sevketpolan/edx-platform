@@ -12,6 +12,7 @@ from xmodule.editing_module import EditingDescriptor
 from xmodule.html_checker import check_html
 from xmodule.stringify import stringify_children
 from xmodule.x_module import XModule
+from xmodule.validation_messages import ValidationMessage
 from xmodule.xml_module import XmlDescriptor, name_to_pathname
 import textwrap
 from xmodule.contentstore.content import StaticContent
@@ -77,10 +78,8 @@ class HtmlModule(HtmlFields, XModule):
 
         Returns message and type. Priority given to error type message.
         """
-
-        validation_messages = {
-            'detailed_messages': [{"message": "The author-supplied HTML does not validate.", "type": "error"}],
-        }
+        validation_messages = super(HtmlModule, self).validation_messages()
+        validation_messages.add_detailed_message(ValidationMessage(u"The author-supplied HTML does not validate.", ValidationMessage.error_type))
 
         return validation_messages
 

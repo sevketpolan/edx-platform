@@ -2,7 +2,6 @@
 <%!
 from django.utils.translation import ugettext as _
 from contentstore.views.helpers import xblock_studio_url
-import json
 %>
 <%
 xblock_url = xblock_studio_url(xblock)
@@ -10,7 +9,7 @@ show_inline = xblock.has_children and not xblock_url
 section_class = "level-nesting" if show_inline else "level-element"
 collapsible_class = "is-collapsible" if xblock.has_children else ""
 label = xblock.display_name or xblock.scope_ids.block_type
-messages = json.dumps(xblock.validation_messages())
+messages = xblock.validation_messages().to_json()
 %>
 
         <%namespace name='static' file='static_content.html'/>
@@ -24,18 +23,16 @@ messages = json.dumps(xblock.validation_messages())
 <script type='text/javascript'>
     require(["js/views/validation_messages", "js/models/validation_messages"],
             function (ValidationMessagesView, ValidationMessagesModel) {
-                var allMessages = ${messages};
+                var model = new ValidationMessagesModel(${messages});
 
-                // TODO: make default implementation empty dict
-                if (!$.isEmptyObject(allMessages)) {
-                    var componentValidationDiv = $('div.component-validation-messages[data-locator="${xblock.location | h}"]');
+                if (!model.get("is_empty")) {
+                    var validationEle = $('div.xblock-validation-messages[data-locator="${xblock.location | h}"]');
 
-                    var model = new ValidationMessagesModel(allMessages);
                     if ($.parseJSON("${is_root == True}".toLowerCase())) {
-                        model.set("root", true);
+                        model.set("is_root", true);
                     }
                     var view = new ValidationMessagesView({
-                        el: componentValidationDiv,
+                        el: validationEle,
                         model: model
                     });
                     view.render();
@@ -98,7 +95,7 @@ messages = json.dumps(xblock.validation_messages())
         </div>
     </div>
     % if not is_root:
-        <div class="wrapper-xblock-message component-validation-messages" data-locator="${xblock.location | h}"/>
+        <div class="wrapper-xblock-message xblock-validation-messages" data-locator="${xblock.location | h}"/>
         % if xblock_url:
         <div class="xblock-header-secondary">
             <div class="meta-info">${_('This block contains multiple components.')}</div>
@@ -117,7 +114,7 @@ messages = json.dumps(xblock.validation_messages())
  </header>
 
 % if is_root:
-    <div class="wrapper-xblock-message component-validation-messages" data-locator="${xblock.location | h}"/>
+    <div class="wrapper-xblock-message xblock-validation-messages" data-locator="${xblock.location | h}"/>
 % endif
 
 % if is_root or not xblock_url:
