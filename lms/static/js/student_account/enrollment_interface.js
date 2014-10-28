@@ -27,13 +27,8 @@ var edx = edx || {};
     me.modeInArray = function(mode_slug, course_modes) {
         // finds whether or not a particular course mode slug exists
         // in an array of course modes
-        for(var i = 0; i < course_modes.length; i++) {
-            var cm = course_modes[i];
-            if(cm.slug == mode_slug) {
-                return true;
-            }
-        }
-        return false;
+        var result = _.find(course_modes, function(mode){ return mode.slug === mode_slug; });
+        return result != undefined;
     };
 
     me.enroll = function(course_key, forward_url){
@@ -65,6 +60,8 @@ var edx = edx || {};
                 forward_url = me.trackSelectionUrl + course_key;
             }
         }
+        // TODO: if we have a paid registration mode, add item to the cart and send them along
+
         // TODO: we should figure out how to handle errors here eventually
         window.location.href = forward_url;
     };
@@ -75,11 +72,8 @@ var edx = edx || {};
         var course = data.course;
         var course_modes = course.course_modes;
         
-        //In the case where we have more than one course mode or there is a 'professional' mode,
-        //send the user to the track selection page.
-        if(course_modes.length > 1 || me.modeInArray('professional', course_modes)) {
-            forward_url = trackSelectionUrl + course_key;
-        }
+        // send the user to the track selection page, because it will do the right thing
+        forward_url = trackSelectionUrl + course_key;
 
         window.location.href = forward_url;
 
