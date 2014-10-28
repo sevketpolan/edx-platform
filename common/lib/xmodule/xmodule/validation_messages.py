@@ -17,6 +17,9 @@ class ValidationMessage(object):
     def to_json(self):
         return self.__dict__
 
+    def __unicode__(self):
+        return self.text
+
 
 class ValidationMessages(object):
 

@@ -9,7 +9,7 @@ from contentstore.views.course import GroupConfiguration
 from contentstore.tests.utils import CourseTestCase
 from xmodule.partitions.partitions import Group, UserPartition
 from xmodule.modulestore.tests.factories import ItemFactory
-from xmodule.split_test_module import ValidationMessage, ValidationMessageType
+from xmodule.validation_messages import ValidationMessage
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore import ModuleStoreEnum
 
