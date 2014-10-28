@@ -323,6 +323,7 @@ milestones, as models for your own course communications.
 
 * :ref:`Prelaunch Reminder`
 * :ref:`Launch Day Welcome`
+* :ref:`Verified Registration Reminder`
 * :ref:`Midcourse Encouragement`
 * :ref:`Midcourse Events`
 * :ref:`Technical Issue`
@@ -412,6 +413,38 @@ personally introduces the course team leader. Search for the values enclosed by
   On behalf of the staff, welcome, good luck, and have fun!
 
   {name} and the {course number} staff
+
+.. _Verified Registration Reminder:
+
+=============================================
+Reminder to Register for Verified Certificate
+=============================================
+
+After your course has launched, you can send an email to remind students that
+the last day to register for a verified certificate is approaching. You can use
+this template as a starting point for your own message; search for the values
+enclosed by {braces} and replace them with information for your course.
+
+::
+
+  Subject: Earn an edX Verified Certficate for {course name}!
+
+  Dear students, 
+
+  You might want to take a course just for the sheer joy of learning something
+  new. But sometimes, completing a course is an accomplishment that can give you
+  something to add to your college application, help you start a new career, or
+  help you get a better job or promotion. A Verified Certificate of Achievement
+  provides this proof of your achievement.
+
+  We would like to remind you that {date} is the last day to register for a
+  Verified Certificate in {course name}. Registering for a certificate is easy!
+  Just go to this course on your edX dashboard and click "Challenge Yourself".
+
+  Good luck!
+
+  {name} and the {course number} staff
+
 
 .. _Midcourse Encouragement:
 
