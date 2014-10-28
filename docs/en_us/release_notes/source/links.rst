@@ -234,6 +234,17 @@
 .. _Add Content Experiments to Your Course: http://edx.readthedocs.org/projects/edx-partner-course-staff/en/latest/content_experiments/content_experiments_add.html
 
 
+.. _Script Tag Format:  http://edx.readthedocs.org/projects/edx-partner-course-staff/en/latest/exercises_tools/custom_python.html#script-tag-format
+
+.. _Write-Your-Own_Grader: http://edx.readthedocs.org/projects/edx-partner-course-staff/en/latest/exercises_tools/custom_python.html#write-your-own-grader
+
+.. _Text Input Problem XML: http://edx.readthedocs.org/projects/edx-partner-course-staff/en/latest/exercises_tools/text_input.html#text-input-problem-xml
+
+.. _Create a Randomized Custom Python-Evaluated Input Problem: http://edx.readthedocs.org/projects/edx-partner-course-staff/en/latest/exercises_tools/custom_python.html#create-a-randomized-custom-python-evaluated-input-problem
+
+.. _Annotation Problem: http://edx.readthedocs.org/projects/edx-partner-course-staff/en/latest/exercises_tools/annotation.html#annotation
+
+.. _Set Important Dates for Your Course: http://edx.readthedocs.org/projects/edx-partner-course-staff/en/latest/building_course/setting_up_student_view.html#set-important-dates-for-your-course
 
 .. Peer Assessments
 
