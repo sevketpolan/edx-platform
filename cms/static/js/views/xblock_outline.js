@@ -54,6 +54,15 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
             },
 
             renderTemplate: function() {
+                var html = this.template(this.getContext());
+                if (this.parentInfo) {
+                    this.setElement($(html));
+                } else {
+                    this.$el.html(html);
+                }
+            },
+
+            getContext: function() {
                 var xblockInfo = this.model,
                     childInfo = xblockInfo.get('child_info'),
                     parentInfo = this.parentInfo,
@@ -62,7 +71,6 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                     parentType = parentInfo ? XBlockViewUtils.getXBlockType(parentInfo.get('category')) : null,
                     addChildName = null,
                     defaultNewChildName = null,
-                    html,
                     isCollapsed = this.shouldRenderChildren() && !this.shouldExpandChildren();
                 if (childInfo) {
                     addChildName = interpolate(gettext('New %(component_type)s'), {
@@ -70,7 +78,7 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                     }, true);
                     defaultNewChildName = childInfo.display_name;
                 }
-                html = this.template({
+                return {
                     xblockInfo: xblockInfo,
                     visibilityClass: XBlockViewUtils.getXBlockVisibilityClass(xblockInfo.get('visibility_state')),
                     typeListClass: XBlockViewUtils.getXBlockListTypeClass(xblockType),
@@ -86,12 +94,7 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                     includesChildren: this.shouldRenderChildren(),
                     hasExplicitStaffLock: this.model.get('has_explicit_staff_lock'),
                     staffOnlyMessage: this.model.get('staff_only_message')
-                });
-                if (this.parentInfo) {
-                    this.setElement($(html));
-                } else {
-                    this.$el.html(html);
-                }
+                };
             },
 
             renderChildren: function() {
@@ -99,7 +102,9 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                     xblockInfo = this.model;
                 if (xblockInfo.get('child_info')) {
                     _.each(this.model.get('child_info').children, function(child) {
-                        var childOutlineView = self.createChildView(child, xblockInfo);
+                        var childOutlineView = self.createChildView(
+                            XBlockOutlineView, {model: child, parentInfo: xblockInfo}
+                        );
                         childOutlineView.render();
                         self.addChildView(childOutlineView);
                     });
@@ -182,15 +187,13 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                 return true;
             },
 
-            createChildView: function(xblockInfo, parentInfo, parentView) {
-                return new XBlockOutlineView({
-                    model: xblockInfo,
-                    parentInfo: parentInfo,
+            createChildView: function(view, options) {
+                return new view($.extend({
                     initialState: this.initialState,
                     expandedLocators: this.expandedLocators,
                     template: this.template,
-                    parentView: parentView || this
-                });
+                    parentView: this
+                }, options));
             },
 
             onSync: function(event) {
