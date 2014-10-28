@@ -287,6 +287,9 @@ FEATURES = {
 
     # Enable the new dashboard, account, and profile pages
     'ENABLE_NEW_DASHBOARD': False,
+
+    # Enable the combined login/registration form
+    'ENABLE_COMBINED_LOGIN_REGISTRATION': False,
 }
 
 # Ignore static asset files on import which match this pattern
