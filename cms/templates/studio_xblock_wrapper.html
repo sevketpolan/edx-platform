@@ -10,8 +10,7 @@ show_inline = xblock.has_children and not xblock_url
 section_class = "level-nesting" if show_inline else "level-element"
 collapsible_class = "is-collapsible" if xblock.has_children else ""
 label = xblock.display_name or xblock.scope_ids.block_type
-# TODO: why on descriptor. Why not just xblock?
-messages = json.dumps(xblock.descriptor.validation_messages())
+messages = json.dumps(xblock.validation_messages())
 %>
 
         <%namespace name='static' file='static_content.html'/>

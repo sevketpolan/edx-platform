@@ -13,10 +13,6 @@ define(["backbone", "gettext"], function (Backbone, gettext) {
         },
 
         getSummaryMessage: function () {
-            var detailedMessages = this.get("detailed_messages");
-            if (detailedMessages.length === 1) {
-                return detailedMessages[0];
-            }
             var summaryMessage;
             if ("message" in this.get("summary")) {
                 summaryMessage = this.get("summary");
@@ -58,14 +54,10 @@ define(["backbone", "gettext"], function (Backbone, gettext) {
         },
 
         getDetailedMessages: function () {
-            var detailedMessages = this.get("detailed_messages");
-            if (detailedMessages.length === 1) {
-                return [];
-            }
             if (this.get("show_detailed_only_when_root") && !this.get("root")) {
                 return [];
             }
-            return detailedMessages;
+            return this.get("detailed_messages");
         },
 
         getAdditionalClasses: function () {

@@ -446,6 +446,9 @@ class XModuleMixin(XBlockMixin):
         self.xmodule_runtime = xmodule_runtime
         self._field_data = field_data
 
+    def validation_messages(self):
+        return {}
+
 
 class ProxyAttribute(object):
     """
@@ -1021,6 +1024,8 @@ class XModuleDescriptor(XModuleMixin, HTMLSnippet, ResourceTemplates, XBlock):
     get_child_descriptors = module_attr('get_child_descriptors')
     xmodule_handler = module_attr('xmodule_handler')
 
+
+
     # ~~~~~~~~~~~~~~~ XBlock API Wrappers ~~~~~~~~~~~~~~~~
     def studio_view(self, _context):
         """
@@ -1032,9 +1037,6 @@ class XModuleDescriptor(XModuleMixin, HTMLSnippet, ResourceTemplates, XBlock):
         Makes no use of the context parameter
         """
         return Fragment(self.get_html())
-
-    def validation_messages(self):
-        return []
 
 
 class ConfigurableFragmentWrapper(object):  # pylint: disable=abstract-method
