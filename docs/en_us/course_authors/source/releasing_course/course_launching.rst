@@ -427,18 +427,15 @@ enclosed by {braces} and replace them with information for your course.
 
 ::
 
-  Subject: Earn an edX Verified Certficate for {course name}!
+  Subject: Earn an edX verified certificate for {course name}!
 
   Dear students, 
 
   You might want to take a course just for the sheer joy of learning something
-  new. But sometimes, completing a course is an accomplishment that can give you
-  something to add to your college application, help you start a new career, or
-  help you get a better job or promotion. A Verified Certificate of Achievement
-  provides this proof of your achievement.
+  new. But sometimes, completing a course can help bolster your college application, jump-start your career, or lead to a better job. With a verified certificate of achievement from edX, you can show colleges, employers, and colleagues that you've completed a challenging course.
 
   We would like to remind you that {date} is the last day to register for a
-  Verified Certificate in {course name}. Registering for a certificate is easy!
+  verified certificate in {course name}. Registering for a certificate is easy!
   Just go to this course on your edX dashboard and click "Challenge Yourself".
 
   Good luck!
