@@ -2,7 +2,6 @@
     <div class="status" aria-hidden="false">
         <p class="message-copy">
             <%- _.sprintf(gettext("You've successfully signed in with %s."), currentProvider) %>
-            <br />
             <%- gettext("We just need a little more information before you start learning with edX.") %>
         </p>
     </div>
