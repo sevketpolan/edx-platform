@@ -78,8 +78,8 @@ var edx = edx || {};
             reset: function( context ) {
                 var model = new edx.student.account.PasswordResetModel(),
                     data = [{
-                        label: gettext("Email"),
-                        instructions: gettext("This is the email address you used to register with edX"),
+                        label: gettext('Email'),
+                        instructions: gettext('This is the email address you used to register with edX'),
                         name: 'email',
                         required: true,
                         type: 'email',

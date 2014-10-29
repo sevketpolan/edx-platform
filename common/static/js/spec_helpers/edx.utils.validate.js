@@ -10,10 +10,10 @@ var edx = edx || {};
             validate: {
 
                 msg: {
-                    email: '<li><%- gettext("A properly formatted email is required") %></li>',
-                    min: '<li><%- _.sprintf(gettext("%s must be a minimum of %d characters long"), field, count) %></li>',
-                    max: '<li><%- _.sprintf(gettext("%s must be a maximum of %d characters long"), field, count) %></li>',
-                    required: '<li><%- _.sprintf("%s field is required"), field) %></li>',
+                    email: '<li><%- gettext(\'A properly formatted email is required\') %></li>',
+                    min: '<li><%- _.sprintf(gettext(\'%s must be a minimum of %d characters long\'), field, count) %></li>',
+                    max: '<li><%- _.sprintf(gettext(\'%s must be a maximum of %d characters long\'), field, count) %></li>',
+                    required: '<li><%- _.sprintf(\'%s field is required\'), field) %></li>',
                     custom: '<li><%= content %></li>'
                 },
 
