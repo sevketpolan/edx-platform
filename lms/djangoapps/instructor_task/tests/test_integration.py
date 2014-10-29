@@ -592,27 +592,22 @@ class TestGradeReportConditionalContent(TestReportMixin, TestIntegrationTask):
             location=vertical_b_url
         )
 
-    def verify_data_in_csv(self, user_data):
+    def verify_rows_in_csv(self, expected_rows):
         """
-        Verify that the grades CSV contains the expected grades
-        content.
+        Verify that the grades CSV contains the expected content.
 
         Arguments:
-            user_data (iterable): An iterable of dictionaries, where
-            each dict represents a subset of a row of data in the
-            grades report CSV.  Each dict maps keys from the CSV
-            header to values in that row's corresponding column.
+            expected_rows (iterable): An iterable of dictionaries, where
+                each dict represents a row of data in the grades
+                report CSV.  Each dict maps keys from the CSV header
+                to values in that row's corresponding cell.
         """
-        def is_dict_subset(little, big):
-            """Return True if little is a subset of big"""
-            return all(item in big.items() for item in little.items())
-
         report_store = ReportStore.from_config()
         report_csv_filename = report_store.links_for(self.course.id)[0][0]
         with open(report_store.path_to(self.course.id, report_csv_filename)) as csv_file:
+            # Expand the dict reader generator so we don't lose it's content
             csv_rows = [row for row in csv.DictReader(csv_file)]
-            for row_subset in user_data:
-                self.assertTrue(any(is_dict_subset(row_subset, row) for row in csv_rows))
+            self.assertEqual(csv_rows, expected_rows)
 
     def test_both_groups_problems(self):
         """
@@ -624,17 +619,32 @@ class TestGradeReportConditionalContent(TestReportMixin, TestIntegrationTask):
         problem_b_url = 'problem_b_url'
         self.define_option_problem(problem_a_url, parent=self.vertical_a)
         self.define_option_problem(problem_b_url, parent=self.vertical_b)
-        # student A will get 100%, student B will get 50%
+        # student A will get 100%, student B will get 50% because
+        # OPTION_1 is the correct option, and OPTION_2 is the
+        # incorrect option
         self.submit_student_answer(self.student_a.username, problem_a_url, [OPTION_1, OPTION_1])
         self.submit_student_answer(self.student_b.username, problem_b_url, [OPTION_1, OPTION_2])
 
         with patch('instructor_task.tasks_helper._get_current_task'):
             result = upload_grades_csv(None, None, self.course.id, None, 'graded')
+            # Verify that both students were successfully graded
             self.assertDictContainsSubset({'attempted': 2, 'succeeded': 2, 'failed': 0}, result)
-            self.verify_data_in_csv(
+            self.verify_rows_in_csv(
                 [
-                    {'username': self.student_a.username, 'grade': '1.0', 'HW': '1.0'},
-                    {'username': self.student_b.username, 'grade': '0.5', 'HW': '0.5'}
+                    {
+                        'id': str(self.student_a.id),
+                        'username': self.student_a.username,
+                        'email': self.student_a.email,
+                        'grade': '1.0',
+                        'HW': '1.0'
+                    },
+                    {
+                        'id': str(self.student_b.id),
+                        'username': self.student_b.username,
+                        'email': self.student_b.email,
+                        'grade': '0.5',
+                        'HW': '0.5'
+                    }
                 ]
             )
 
@@ -647,14 +657,27 @@ class TestGradeReportConditionalContent(TestReportMixin, TestIntegrationTask):
         """
         problem_a_url = 'problem_a_url'
         self.define_option_problem(problem_a_url, parent=self.vertical_a)
+
         self.submit_student_answer(self.student_a.username, problem_a_url, [OPTION_1, OPTION_1])
 
         with patch('instructor_task.tasks_helper._get_current_task'):
             result = upload_grades_csv(None, None, self.course.id, None, 'graded')
             self.assertDictContainsSubset({'attempted': 2, 'succeeded': 2, 'failed': 0}, result)
-            self.verify_data_in_csv(
+            self.verify_rows_in_csv(
                 [
-                    {'username': self.student_a.username, 'grade': '1.0', 'HW': '1.0'},
-                    {'username': self.student_b.username, 'grade': '0.0', 'HW': '0.0'}
+                    {
+                        'id': str(self.student_a.id),
+                        'username': self.student_a.username,
+                        'email': self.student_a.email,
+                        'grade': '1.0',
+                        'HW': '1.0'
+                    },
+                    {
+                        'id': str(self.student_b.id),
+                        'username': self.student_b.username,
+                        'email': self.student_b.email,
+                        'grade': '0.0',
+                        'HW': '0.0'
+                    }
                 ]
             )
