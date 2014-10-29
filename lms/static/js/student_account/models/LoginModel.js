@@ -36,14 +36,15 @@ var edx = edx || {};
                 // check for enrollment
                 // try to enroll
 
-                var enrollment = edx.student.account.EnrollmentInterface;
-                var query = new URI(window.location.search);
-                var url = '/dashboard';
-                var query_map = query.search(true);
+                var enrollment = edx.student.account.EnrollmentInterface,
+                    query = new URI(window.location.search),
+                    url = '/dashboard',
+                    query_map = query.search(true),
+                    next = '';
                 
                 // check for forwarding url
                 if("next" in query_map) {
-                    var next = query_map['next'];
+                    next = query_map['next'];
                     if(!window.isExternal(next)){
                         url = next;
                     }
@@ -52,9 +53,8 @@ var edx = edx || {};
                 model.trigger('sync');
 
                 // if we need to enroll in the course, mark as enrolled
-                if("enrollment_action" in query_map && query_map["enrollment_action"] === "enroll"){
-                    var course_id = query_map['course_id'];
-                    enrollment.enroll(course_id, url);
+                if('enrollment_action' in query_map && query_map['enrollment_action'] === 'enroll'){
+                    enrollment.enroll(query_map['course_id'], url);
                 }
                 else {
                     window.location.href = url;
