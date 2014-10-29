@@ -1,6 +1,6 @@
 <header class="js-login-register-header header">
     <h1 class="headline"><%- gettext("Welcome!") %></h1>
-    <p class="tagline"><%- gettext("Please log in to continue.") %></p>
+    <p class="tagline"><%- gettext("Please log in to continue") %></p>
 </header>
 
 <section class="form-type">
