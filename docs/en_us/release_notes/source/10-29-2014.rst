@@ -28,8 +28,8 @@ edX Learning Management System
 *******************************
 
 * In Firefox and Safari browsers, after a student changed the video speed,
-  videos in other units still played at the defaul speed, 1.0X. This problem is
-  fixed and videos in other units play at the selected speed. (TNL-537)
+  videos in other units still played at the default speed, 1.0X. This problem
+  is fixed and videos in other units play at the selected speed. (TNL-537)
 
 
 ********************************************
