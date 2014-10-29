@@ -11,16 +11,20 @@ define(['js/views/xblock_outline'],
                 this.currentUnitId = this.options.currentUnitId;
             },
 
-            getContext: function() {
+            getTemplateContext: function() {
                 return $.extend(
-                    XBlockOutlineView.prototype.getContext.call(this),
+                    XBlockOutlineView.prototype.getTemplateContext.call(this),
                     {currentUnitId: this.currentUnitId}
                 );
             },
 
-            createChildView: function(view, options) {
+            getChildViewClass: function() {
+                return UnitOutlineChildView;
+            },
+
+            createChildView: function(childInfo, parentInfo, options) {
                 return XBlockOutlineView.prototype.createChildView.call(
-                    this, UnitOutlineChildView, $.extend(options, {currentUnitId: this.currentUnitId})
+                    this, childInfo, parentInfo, $.extend(options, {currentUnitId: this.currentUnitId})
                 );
             }
         });

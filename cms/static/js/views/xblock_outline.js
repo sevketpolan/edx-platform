@@ -54,7 +54,7 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
             },
 
             renderTemplate: function() {
-                var html = this.template(this.getContext());
+                var html = this.template(this.getTemplateContext());
                 if (this.parentInfo) {
                     this.setElement($(html));
                 } else {
@@ -62,7 +62,7 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                 }
             },
 
-            getContext: function() {
+            getTemplateContext: function() {
                 var xblockInfo = this.model,
                     childInfo = xblockInfo.get('child_info'),
                     parentInfo = this.parentInfo,
@@ -99,12 +99,10 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
 
             renderChildren: function() {
                 var self = this,
-                    xblockInfo = this.model;
-                if (xblockInfo.get('child_info')) {
-                    _.each(this.model.get('child_info').children, function(child) {
-                        var childOutlineView = self.createChildView(
-                            XBlockOutlineView, {model: child, parentInfo: xblockInfo}
-                        );
+                    parentInfo = this.model;
+                if (parentInfo.get('child_info')) {
+                    _.each(this.model.get('child_info').children, function(childInfo) {
+                        var childOutlineView = self.createChildView(childInfo, parentInfo);
                         childOutlineView.render();
                         self.addChildView(childOutlineView);
                     });
@@ -187,12 +185,19 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                 return true;
             },
 
-            createChildView: function(view, options) {
-                return new view($.extend({
+            getChildViewClass: function() {
+                return XBlockOutlineView;
+            },
+
+            createChildView: function(childInfo, parentInfo, options) {
+                var viewClass = this.getChildViewClass();
+                return new viewClass($.extend({
+                    model: childInfo,
+                    parentInfo: parentInfo,
+                    parentView: this,
                     initialState: this.initialState,
                     expandedLocators: this.expandedLocators,
-                    template: this.template,
-                    parentView: this
+                    template: this.template
                 }, options));
             },
 

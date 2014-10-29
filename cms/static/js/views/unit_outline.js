@@ -30,13 +30,9 @@ define(['js/views/xblock_outline', 'js/views/unit_outline_child'],
                     for (i=ancestors.length - 1; i >= 0; i--) {
                         ancestor = ancestors[i];
                         ancestorView = this.createChildView(
-                            UnitOutlineChildView,
-                            {
-                                model: ancestor,
-                                parentInfo: previousAncestor,
-                                parentView: ancestorView,
-                                currentUnitId: this.model.get('id')
-                            }
+                            ancestor,
+                            previousAncestor,
+                            {parentView: ancestorView, currentUnitId: this.model.get('id')}
                         );
                         ancestorView.render();
                         listElement.append(ancestorView.$el);
@@ -45,6 +41,10 @@ define(['js/views/xblock_outline', 'js/views/unit_outline_child'],
                     }
                 }
                 return ancestorView;
+            },
+
+            getChildViewClass: function() {
+                return UnitOutlineChildView;
             }
         });
 

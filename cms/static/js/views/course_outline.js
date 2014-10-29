@@ -35,8 +35,8 @@ define(["jquery", "underscore", "js/views/xblock_outline", "js/views/utils/view_
                 return !this.model.isVertical();
             },
 
-            createChildView: function(view, options) {
-                return XBlockOutlineView.prototype.createChildView.call(this, CourseOutlineView, options);
+            getChildViewClass: function() {
+                return CourseOutlineView;
             },
 
             /**
@@ -105,10 +105,7 @@ define(["jquery", "underscore", "js/views/xblock_outline", "js/views/utils/view_
                     });
                     // Fetch the full xblock info for the section and then create a view for it
                     sectionInfo.fetch().done(function() {
-                        sectionView = self.createChildView(
-                            CourseOutlineView,
-                            {model: sectionInfo, parentInfo: self.model, parentView: self}
-                        );
+                        sectionView = self.createChildView(sectionInfo, self.model, {parentView: self});
                         sectionView.initialState = initialState;
                         sectionView.expandedLocators = self.expandedLocators;
                         sectionView.render();
