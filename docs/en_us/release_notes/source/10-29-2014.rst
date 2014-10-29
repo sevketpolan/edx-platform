@@ -19,7 +19,8 @@ an email message when we update the edX Course Staff Release Notes.
 edX Website
 *******************************
 
-* The student dashboard now shows the start time for new courses. (TNL-567)
+* The student dashboard now shows the start time as well as the date for new
+  courses. (TNL-567)
 
 
 *******************************
@@ -27,16 +28,17 @@ edX Learning Management System
 *******************************
 
 * In Firefox and Safari browsers, after a student changed the video speed,
-  videos in other units still played at the defaul 1.0X. This problem is fixed
-  and videos in other units play at the selected speed. (TNL-537)
+  videos in other units still played at the defaul speed, 1.0X. This problem is
+  fixed and videos in other units play at the selected speed. (TNL-537)
+
 
 ********************************************
 edX Learning Management System Accessibility
 ********************************************
 
-* For accessibility, the progress meter in the video player now has three
-  additional aria state attributes: ``aria-valuemax``, ``aria-valuemin``, and
-  ``aria-valuenow``. (TNL-89)
+* For improved accessibility, the progress meter in the video player now has
+  three additional aria state attributes: ``aria-valuemax``, ``aria-valuemin``,
+  and ``aria-valuenow``. (TNL-89)
 
 * The problem status after a student checks or shows an answer is now
   accessible to screen readers. (TNL-568, TNL-588, TNL-595)
@@ -48,7 +50,7 @@ edX Studio
 
 * Course staff now have the ability to add a **Reset** button to problems.
   Students can click **Reset** to clear any input that has not yet been
-  submitted, and try again to answer the question. See DOC LINK.
+  submitted, and try again to answer the question. See `Show Reset Button`_.
 
 
 **************************
@@ -68,8 +70,10 @@ The following documentation is available:
 
   Recent changes include:
 
-  * Fixed the code sample in `Script Tag Format`_ in the `Write-Your-Own-
-    Grader`_ Problem chapter.
+  * Added the section `Show Reset Button`_ in `Problem Settings`_ and
+    clarified Reset button behavior in `Problem Student View`_.
+
+  * Fixed the code sample in `Script Tag Format`_ in the `Write-Your-Own-Grader`_ Problem chapter.
 
   * Fixed a bug in `Text Input Problem XML`_.
   
@@ -78,13 +82,19 @@ The following documentation is available:
   * Added note about limited support of annotation problem type to `Annotation
     Problem`_.
 
-  * Updated `Set Important Dates for Your Course` to reflect change that course
-    dates now use UTC.
+  * Updated `Set Important Dates for Your Course`_ to reflect change that
+    course dates now use UTC.
 
 
 * `Using edX Insights`_
 
 * `EdX Guide for Students`_
+  
+  Recent changes include:
+
+  * Added the `Introduction`_ section.
+
+  * Added the `Student Guide to Course Discussions`_ section.
 
 * `Creating Peer Assessments`_
 
@@ -92,7 +102,14 @@ The following documentation is available:
   
   Recent changes include:
 
-  * 
+  * Added best practices for passphrases to the `Keys and Credentials for Data
+    Transfers`_ chapter.
+
+  * Added examples of the format used to identify course components to the
+    `Student Info and Progress Data`_ and `Tracking Logs`_ chapters.
+
+  * Updated the ``child_render`` event to reflect the name change for the
+    ``child_id`` member field. See `Tracking Logs`_.
 
 * `edX Developer's Guide`_
 
@@ -104,8 +121,11 @@ The following documentation is available:
   
   Recent changes include:
 
-  * Added alpha documentation for the `Graphical Slider Tool`_ and `Symbolic
-    Response`_ to the `Problems and Tools`_ section.
+  * Added the section `Example of an OLX Course`_.
+  
+  * Added `Create a Randomized Custom Python-Evaluated Input Problem for OLX`_ 
+    
+  * Fixed the code sample in `Script Tag Format for OLX`_ in the `Write-Your-Own-Grader for OLX`_ chapter.
 
 
 
