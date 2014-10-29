@@ -25,6 +25,12 @@ var edx = edx || {};
         activeForm: '',
 
         initialize: function( obj ) {
+            /* Mix non-conflicting functions from underscore.string
+             * (all but include, contains, and reverse) into the
+             * Underscore namespace
+             */
+            _.mixin(_.str.exports())
+
             this.tpl = $(this.tpl).html();
             this.activeForm = obj.mode || 'login';
             this.thirdPartyAuth = obj.thirdPartyAuth || {
