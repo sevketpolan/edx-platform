@@ -3,8 +3,8 @@
  * Subsection, and Unit within the Unit Outline component on the unit
  * page.
  */
-define(['js/views/xblock_outline'],
-    function(XBlockOutlineView) {
+define(['underscore', 'js/views/xblock_outline'],
+    function(_, XBlockOutlineView) {
         var UnitOutlineChildView = XBlockOutlineView.extend({
             initialize: function() {
                 XBlockOutlineView.prototype.initialize.call(this);
@@ -12,7 +12,7 @@ define(['js/views/xblock_outline'],
             },
 
             getTemplateContext: function() {
-                return $.extend(
+                return _.extend(
                     XBlockOutlineView.prototype.getTemplateContext.call(this),
                     {currentUnitId: this.currentUnitId}
                 );
@@ -23,8 +23,9 @@ define(['js/views/xblock_outline'],
             },
 
             createChildView: function(childInfo, parentInfo, options) {
+                options = _.isUndefined(options) ? {} : options;
                 return XBlockOutlineView.prototype.createChildView.call(
-                    this, childInfo, parentInfo, $.extend(options, {currentUnitId: this.currentUnitId})
+                    this, childInfo, parentInfo, _.extend(options, {currentUnitId: this.currentUnitId})
                 );
             }
         });

@@ -191,7 +191,7 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
 
             createChildView: function(childInfo, parentInfo, options) {
                 var viewClass = this.getChildViewClass();
-                return new viewClass($.extend({
+                return new viewClass(_.extend({
                     model: childInfo,
                     parentInfo: parentInfo,
                     parentView: this,
