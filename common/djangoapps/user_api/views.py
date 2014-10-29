@@ -411,7 +411,9 @@ class RegistrationView(APIView):
     def _add_goals_field(self, form_desc, required=True):
         # Translators: This phrase appears above a field on the registration form
         # meant to hold the user's reasons for registering with edX.
-        goals_label = _(u"Please share with us your reasons for registering with edX")
+        goals_label = _(
+            u"Please share with us your reasons for registering with {platform_name}"
+        ).format(platform_name=settings.PLATFORM_NAME)
 
         form_desc.add_field(
             "goals",
